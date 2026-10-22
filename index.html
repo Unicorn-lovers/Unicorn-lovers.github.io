@@ -269,21 +269,36 @@
 
     .profile-unicorn {
       width: 82%;
-      aspect-ratio: 1.62;
+      aspect-ratio: 1;
       position: relative;
       overflow: hidden;
       filter: drop-shadow(0 10px 12px rgba(91, 56, 148, .22)) drop-shadow(0 0 10px rgba(255, 255, 255, .72));
       transform: rotate(-4deg);
-      animation: unicornBob 2.8s ease-in-out infinite;
+      animation: characterBob 2.8s ease-in-out infinite;
     }
 
     .profile-unicorn::before {
       content: "";
       position: absolute;
-      inset: 0 auto 0 0;
-      width: 400%;
-      background: url("assets/unicorn-flight.png") 0 0 / 100% 100% no-repeat;
-      animation: unicornFrame .92s steps(4) infinite;
+      inset: 0;
+      background: url("assets/profile-character.png") center / cover no-repeat;
+      border-radius: 28%;
+    }
+
+    .profile-unicorn::after {
+      content: "";
+      position: absolute;
+      width: 22%;
+      height: 10%;
+      top: 55%;
+      right: 21%;
+      border-top: 3px solid #252b40;
+      border-radius: 50%;
+      background: #fff;
+      opacity: 0;
+      transform: scaleY(0);
+      transform-origin: center;
+      animation: wink 5.2s ease-in-out infinite;
     }
 
     .profile-name {
@@ -599,7 +614,7 @@
       }
     }
 
-    @keyframes unicornBob {
+    @keyframes characterBob {
       0%, 100% {
         transform: translateY(0) rotate(-2deg);
       }
@@ -608,9 +623,14 @@
       }
     }
 
-    @keyframes unicornFrame {
-      to {
-        transform: translateX(-100%);
+    @keyframes wink {
+      0%, 84%, 100% {
+        opacity: 0;
+        transform: scaleY(0);
+      }
+      88%, 94% {
+        opacity: 1;
+        transform: scaleY(1);
       }
     }
 
