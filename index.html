@@ -182,7 +182,7 @@
       min-height: 0;
       display: grid;
       grid-template-columns: minmax(0, 1fr);
-      grid-template-rows: minmax(150px, .38fr) minmax(420px, 1.62fr);
+      grid-template-rows: minmax(105px, .25fr) minmax(420px, 1.75fr);
       gap: 12px;
     }
 
@@ -202,10 +202,6 @@
       transform: translateY(0) scale(1);
     }
 
-    body.is-ready .profile-panel {
-      transition-delay: .08s;
-    }
-
     body.is-ready .activities-panel {
       transition-delay: .12s;
     }
@@ -213,17 +209,12 @@
     .profile-panel {
       grid-column: 1;
       grid-row: 1;
-      padding: 18px;
+      min-height: 105px;
+      padding: 14px 18px;
       display: grid;
-      grid-template-rows: minmax(0, 1fr) auto;
-      place-items: stretch;
+      place-items: center;
+      position: relative;
       text-align: center;
-      --status-accent: #47bfe9;
-      border-color: rgba(71, 191, 235, .34);
-      background:
-        radial-gradient(circle at 50% 25%, rgba(255, 255, 255, .98), rgba(255, 255, 255, .66) 44%, transparent 45%),
-        linear-gradient(145deg, #ccefff, #dcf6ff 56%, #effcff);
-      box-shadow: inset 0 4px 0 rgba(139, 223, 255, .72), var(--panel-shadow);
     }
 
     .profile-content {
@@ -265,28 +256,38 @@
       background: var(--mint);
     }
 
-    .profile-dots {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-    }
-
     .profile-name {
       margin: 0;
-      font-size: clamp(21px, 2.6vw, 31px);
-      font-weight: 600;
-      letter-spacing: -.04em;
+      display: inline-flex;
+      align-items: flex-end;
+      gap: .48em;
+      font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+      font-size: clamp(23px, 2.5vw, 31px);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: .055em;
     }
 
-    .profile-name ruby {
-      ruby-position: over;
+    .profile-name > span {
+      white-space: nowrap;
     }
 
-    .profile-name rt {
+    .given-name {
+      padding-top: .52em;
+      position: relative;
+    }
+
+    .profile-name .furigana {
+      width: max-content;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
       color: var(--violet);
-      font-size: .36em;
-      font-weight: 500;
-      letter-spacing: .1em;
+      font-size: .31em;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: .12em;
     }
 
     .profile-meta {
@@ -299,10 +300,9 @@
     }
 
     .profile-meta span {
-      padding: 7px 9px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, .66);
+      padding: 0;
+      color: var(--ink-soft);
+      letter-spacing: .12em;
       white-space: nowrap;
     }
 
@@ -436,7 +436,7 @@
     @media (max-width: 980px) {
       .dashboard {
         grid-template-columns: minmax(0, 1fr);
-        grid-template-rows: minmax(170px, auto) auto;
+        grid-template-rows: minmax(110px, auto) auto;
       }
 
       .profile-panel {
@@ -485,7 +485,7 @@
       }
 
       .profile-panel {
-        min-height: 170px;
+        min-height: 110px;
       }
 
       .activities-panel {
@@ -537,13 +537,11 @@
     </header>
 
     <main class="dashboard" id="top">
-      <section class="panel profile-panel" id="profile" aria-labelledby="profile-name">
-        <span class="panel-dots profile-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      <section class="profile-panel" id="profile" aria-labelledby="profile-name">
         <div class="profile-content">
-          <h1 class="profile-name" id="profile-name">伊藤　<ruby>夕夏<rt>ゆか</rt></ruby></h1>
+          <h1 class="profile-name" id="profile-name" aria-label="伊藤 夕夏（ゆか）"><span>伊藤</span><span class="given-name"><span class="furigana" aria-hidden="true">ゆか</span>夕夏</span></h1>
           <div class="profile-meta"><span>2008.07.18</span></div>
         </div>
-        <div class="panel-status" data-default='profile_ready("yuka")'><span class="panel-status-text">profile_ready("yuka")</span><i class="panel-status-cursor" aria-hidden="true"></i></div>
       </section>
 
       <section class="panel activities-panel" id="activity" aria-labelledby="activity-title">
