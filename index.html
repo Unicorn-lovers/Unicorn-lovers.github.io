@@ -86,6 +86,24 @@
       gap: 12px;
     }
 
+    .swimming-fish {
+      width: clamp(150px, 23vw, 260px);
+      position: fixed;
+      left: 0;
+      bottom: 13vh;
+      z-index: 5;
+      pointer-events: none;
+      user-select: none;
+      mix-blend-mode: multiply;
+      filter: drop-shadow(0 12px 12px rgba(46, 77, 132, .18));
+      opacity: 0;
+      animation: fishSwim 24s ease-in-out infinite;
+    }
+
+    .swimming-fish.is-processed {
+      opacity: .94;
+    }
+
     .topbar {
       min-height: 48px;
       padding: 0 15px;
@@ -281,24 +299,8 @@
       content: "";
       position: absolute;
       inset: 0;
-      background: url("assets/profile-character.png") center / cover no-repeat;
+      background: url("assets/profile-character.gif") center / cover no-repeat;
       border-radius: 28%;
-    }
-
-    .profile-unicorn::after {
-      content: "";
-      position: absolute;
-      width: 22%;
-      height: 10%;
-      top: 55%;
-      right: 21%;
-      border-top: 3px solid #252b40;
-      border-radius: 50%;
-      background: #fff;
-      opacity: 0;
-      transform: scaleY(0);
-      transform-origin: center;
-      animation: wink 5.2s ease-in-out infinite;
     }
 
     .profile-name {
@@ -623,20 +625,34 @@
       }
     }
 
-    @keyframes wink {
-      0%, 84%, 100% {
-        opacity: 0;
-        transform: scaleY(0);
-      }
-      88%, 94% {
-        opacity: 1;
-        transform: scaleY(1);
-      }
-    }
-
     @keyframes statusCursorBlink {
       50% {
         opacity: 0;
+      }
+    }
+
+    @keyframes fishSwim {
+      0% {
+        transform: translate3d(-34vw, 12vh, 0) rotate(-4deg) scaleX(1);
+      }
+      40% {
+        transform: translate3d(72vw, -5vh, 0) rotate(4deg) scaleX(1);
+      }
+      48% {
+        transform: translate3d(72vw, -5vh, 0) rotate(4deg) scaleX(-1);
+      }
+      88% {
+        transform: translate3d(-34vw, 8vh, 0) rotate(-3deg) scaleX(-1);
+      }
+      96%, 100% {
+        transform: translate3d(-34vw, 12vh, 0) rotate(-4deg) scaleX(1);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .swimming-fish {
+        animation: none;
+        transform: translate3d(8vw, 0, 0) rotate(-2deg);
       }
     }
 
@@ -786,7 +802,7 @@
       <section class="panel profile-panel" id="profile" aria-labelledby="profile-name">
         <span class="panel-dots profile-dots" aria-hidden="true"><i></i><i></i><i></i></span>
         <div class="profile-content">
-          <div class="profile-art" tabindex="0" data-status='animate("unicorn")'><span class="profile-unicorn" aria-hidden="true"></span></div>
+          <div class="profile-art" tabindex="0" data-status='animate("character")'><span class="profile-unicorn" aria-hidden="true"></span></div>
           <h2 class="profile-name" id="profile-name">伊藤　<ruby>夕夏<rt>ゆか</rt></ruby></h2>
           <div class="profile-meta"><span class="school-pill">盛岡中央高等学校</span><span>2008.07.18</span><span>O</span></div>
         </div>
@@ -837,8 +853,57 @@
     </main>
   </div>
 
+  <img class="swimming-fish" src="assets/swimming-fish.png" alt="" aria-hidden="true">
+
   <script>
     requestAnimationFrame(() => document.body.classList.add("is-ready"));
+
+    const swimmingFish = document.querySelector(".swimming-fish");
+    if (swimmingFish) {
+      const source = new Image();
+      source.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = source.naturalWidth;
+        canvas.height = source.naturalHeight;
+        const context = canvas.getContext("2d");
+        context.drawImage(source, 0, 0);
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        const { data, width, height } = imageData;
+        const queue = [];
+        const visited = new Uint8Array(width * height);
+        const enqueue = (x, y) => {
+          if (x >= 0 && x < width && y >= 0 && y < height) queue.push([x, y]);
+        };
+
+        for (let x = 0; x < width; x += 1) {
+          enqueue(x, 0);
+          enqueue(x, height - 1);
+        }
+        for (let y = 0; y < height; y += 1) {
+          enqueue(0, y);
+          enqueue(width - 1, y);
+        }
+
+        while (queue.length) {
+          const [x, y] = queue.pop();
+          const index = y * width + x;
+          if (visited[index]) continue;
+          visited[index] = 1;
+          const pixel = index * 4;
+          if (data[pixel] < 238 || data[pixel + 1] < 238 || data[pixel + 2] < 238) continue;
+          data[pixel + 3] = 0;
+          enqueue(x + 1, y);
+          enqueue(x - 1, y);
+          enqueue(x, y + 1);
+          enqueue(x, y - 1);
+        }
+
+        context.putImageData(imageData, 0, 0);
+        swimmingFish.src = canvas.toDataURL("image/png");
+        swimmingFish.classList.add("is-processed");
+      };
+      source.src = swimmingFish.src;
+    }
 
     document.querySelectorAll("[data-status]").forEach((item) => {
       const status = item.closest(".panel")?.querySelector(".panel-status");
