@@ -97,11 +97,18 @@
       user-select: none;
       filter: drop-shadow(0 12px 12px rgba(46, 77, 132, .18));
       opacity: 0;
-      animation: fishSwim 24s ease-in-out infinite;
+      animation: fishSwim 46s ease-in-out infinite;
     }
 
     .swimming-fish.is-processed {
       opacity: .94;
+    }
+
+    .fish-bob {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      animation: fishBob 4.8s ease-in-out infinite;
     }
 
     .swimming-fish img {
@@ -120,7 +127,7 @@
     .fish-tail {
       clip-path: inset(0 0 0 60%);
       transform-origin: 62% 58%;
-      animation: tailWag .55s ease-in-out infinite;
+      animation: tailWag 1.45s ease-in-out infinite;
     }
 
     .topbar {
@@ -314,12 +321,6 @@
       animation: characterBob 2.8s ease-in-out infinite;
     }
 
-    .profile-unicorn::before {
-      position: absolute;
-      inset: 0;
-      border-radius: 28%;
-    }
-
     .profile-icon {
       width: 100%;
       height: 100%;
@@ -333,20 +334,40 @@
       opacity: 1;
     }
 
-    .profile-unicorn::after {
+    .wink-eye {
       content: "";
-      width: 18%;
-      height: 9%;
+      width: 13%;
+      aspect-ratio: 1;
       position: absolute;
-      top: 56%;
-      right: 20%;
-      border-top: 3px solid #252b40;
+      top: 55%;
+      left: 60%;
       border-radius: 50%;
       background: #fff;
       opacity: 0;
-      transform: scaleY(0);
-      transform-origin: center;
-      animation: wink 6.4s ease-in-out infinite;
+      animation: winkEye 7.2s ease-in-out infinite;
+    }
+
+    .wink-eye::after {
+      content: "";
+      width: 85%;
+      height: 40%;
+      position: absolute;
+      top: 42%;
+      left: 8%;
+      border-top: 2px solid #252b40;
+      border-radius: 50%;
+    }
+
+    .wink-sparkle {
+      position: absolute;
+      top: 48%;
+      left: 72%;
+      color: #ffd84d;
+      font-size: clamp(18px, 2.4vw, 26px);
+      line-height: 1;
+      opacity: 0;
+      text-shadow: 0 0 3px #fff, 0 0 8px rgba(255, 216, 77, .95);
+      animation: winkSparkle 7.2s ease-in-out infinite;
     }
 
     .profile-name {
@@ -677,41 +698,67 @@
       }
     }
 
-    @keyframes wink {
-      0%, 89%, 100% {
+    @keyframes winkEye {
+      0%, 87%, 93%, 100% {
         opacity: 0;
-        transform: scaleY(0);
       }
-      91%, 94% {
+      89%, 91% {
         opacity: 1;
-        transform: scaleY(1);
+      }
+    }
+
+    @keyframes winkSparkle {
+      0%, 84%, 98%, 100% {
+        opacity: 0;
+        transform: scale(.2) rotate(-35deg);
+      }
+      87% {
+        opacity: 1;
+        transform: scale(1.25) rotate(10deg);
+      }
+      92% {
+        opacity: .8;
+        transform: scale(.75) rotate(28deg);
+      }
+      95% {
+        opacity: 1;
+        transform: scale(1.05) rotate(46deg);
       }
     }
 
     @keyframes tailWag {
       0%, 100% {
-        transform: rotate(4deg);
+        transform: rotate(3deg);
       }
       50% {
-        transform: rotate(-7deg);
+        transform: rotate(-6deg);
+      }
+    }
+
+    @keyframes fishBob {
+      0%, 100% {
+        transform: translateY(12px) rotate(-2deg);
+      }
+      50% {
+        transform: translateY(-14px) rotate(2deg);
       }
     }
 
     @keyframes fishSwim {
       0% {
-        transform: translate3d(-34vw, 12vh, 0) rotate(-4deg) scaleX(1);
+        transform: translate3d(-34vw, 0, 0) scaleX(-1);
       }
-      40% {
-        transform: translate3d(72vw, -5vh, 0) rotate(4deg) scaleX(1);
+      45% {
+        transform: translate3d(72vw, 0, 0) scaleX(-1);
       }
-      48% {
-        transform: translate3d(72vw, -5vh, 0) rotate(4deg) scaleX(-1);
+      45.01% {
+        transform: translate3d(72vw, 0, 0) scaleX(1);
       }
-      88% {
-        transform: translate3d(-34vw, 8vh, 0) rotate(-3deg) scaleX(-1);
+      95% {
+        transform: translate3d(-34vw, 0, 0) scaleX(1);
       }
-      96%, 100% {
-        transform: translate3d(-34vw, 12vh, 0) rotate(-4deg) scaleX(1);
+      95.01%, 100% {
+        transform: translate3d(-34vw, 0, 0) scaleX(-1);
       }
     }
 
@@ -868,7 +915,7 @@
       <section class="panel profile-panel" id="profile" aria-labelledby="profile-name">
         <span class="panel-dots profile-dots" aria-hidden="true"><i></i><i></i><i></i></span>
         <div class="profile-content">
-          <div class="profile-art" tabindex="0" data-status='animate("character")'><span class="profile-unicorn" aria-hidden="true"><img class="profile-icon transparent-image" src="assets/profile-icon.jpg" alt=""></span></div>
+          <div class="profile-art" tabindex="0" data-status='animate("character")'><span class="profile-unicorn" aria-hidden="true"><img class="profile-icon transparent-image" src="assets/profile-icon.jpg" alt=""><span class="wink-eye"></span><span class="wink-sparkle">✦</span></span></div>
           <h2 class="profile-name" id="profile-name">伊藤　<ruby>夕夏<rt>ゆか</rt></ruby></h2>
           <div class="profile-meta"><span class="school-pill">盛岡中央高等学校</span><span>2008.07.18</span><span>O</span></div>
         </div>
@@ -920,8 +967,10 @@
   </div>
 
   <div class="swimming-fish" aria-hidden="true">
-    <img class="fish-body transparent-image" src="assets/swimming-fish.png" alt="">
-    <img class="fish-tail transparent-image" src="assets/swimming-fish.png" alt="">
+    <div class="fish-bob">
+      <img class="fish-body transparent-image" src="assets/swimming-fish.png" alt="">
+      <img class="fish-tail transparent-image" src="assets/swimming-fish.png" alt="">
+    </div>
   </div>
 
   <script>
